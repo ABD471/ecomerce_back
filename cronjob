@@ -1,0 +1,1 @@
+*/5 * * * * root php /var/www/html/delete_unverified_users.php >> /var/log/cron.log 2>&1
