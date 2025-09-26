@@ -61,8 +61,8 @@ try {
     }
 
     // إدخال المستخدم الجديد
-    $stmt = $pdo->prepare('INSERT INTO users (username, email, password) VALUES (?, ?, ?)');
-    $stmt->execute([$username, $email, $hashedPassword]);
+    $stmt = $pdo->prepare('INSERT INTO users (username, email, password,role) VALUES (?, ?, ?,?)');
+    $stmt->execute([$username, $email, $hashedPassword, 'admin']);
     $hash_otp = resendOTP($email);
     $recipient_email = $email;
     $recipient_name = $username;

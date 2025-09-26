@@ -53,7 +53,8 @@ if (!$email) {
 }
 
 // إعداد بيانات JWT
-$secret_key = getenv('JWT_SECRET'); // تأكد من ضبط هذا المتغير في البيئة
+$config = require __DIR__ . '/config.php';
+$secret_key= $config['jwt_key']; // تأكد من ضبط هذا المتغير في البيئة
 $issuedAt   = time();
 $expiration = $issuedAt + 3600; // صالح لمدة ساعة
 
