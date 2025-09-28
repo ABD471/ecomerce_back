@@ -4,6 +4,8 @@ WORKDIR /var/www/html
 
 # تثبيت الحزم المطلوبة + cron
 RUN apt-get update && apt-get install -y \
+    nginx \
+    supervisor \
     libpq-dev \
     zip \
     unzip \
@@ -38,11 +40,12 @@ RUN chmod 0644 /etc/cron.d/delete-unverified
 RUN touch /var/log/cron.log
 
 # تشغيل cron و PHP-FPM معًا
-COPY start.sh /start.sh
-RUN chmod +x /start.sh
+COPY supervisord.conf /etc/supervisord.conf
+
 
 
 EXPOSE 80
 
-CMD ["/start.sh"]
+CMD ["supervisord", "-c", "/etc/supervisord.conf"]
+
 
