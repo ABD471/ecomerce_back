@@ -30,7 +30,7 @@ RUN composer install --no-interaction --optimize-autoloader
 
 # نسخ باقي ملفات المشروع
 COPY ./src ./
-
+COPY ./nginx/nginx.conf /etc/nginx/conf.d/default.conf
 # نسخ ملف المهام المجدولة
 COPY cronjob /etc/cron.d/delete-unverified
 
