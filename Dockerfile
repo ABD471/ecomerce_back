@@ -38,7 +38,11 @@ RUN chmod 0644 /etc/cron.d/delete-unverified
 RUN touch /var/log/cron.log
 
 # تشغيل cron و PHP-FPM معًا
-CMD ["sh", "-c", "cron && php-fpm"]
+COPY start.sh /start.sh
+RUN chmod +x /start.sh
+
 
 EXPOSE 80
+
 CMD ["/start.sh"]
+
