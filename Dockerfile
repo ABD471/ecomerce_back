@@ -41,3 +41,4 @@ RUN touch /var/log/cron.log
 CMD ["sh", "-c", "cron && php-fpm"]
 
 EXPOSE 80
+CMD ["/start.sh"]
