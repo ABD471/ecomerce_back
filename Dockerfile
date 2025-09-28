@@ -40,4 +40,4 @@ RUN touch /var/log/cron.log
 # تشغيل cron و PHP-FPM معًا
 CMD ["sh", "-c", "cron && php-fpm"]
 
-EXPOSE 9000
+EXPOSE 80
