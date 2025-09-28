@@ -22,10 +22,59 @@ if ($decoded->role !== 'admin') {
     exit;
 }
 
-// جلب المستخدمين
-$stmt = $pdo->query("SELECT id, username, email, role, active, created_at FROM users ORDER BY created_at DESC");
+// استقبال معايير البحث والتصفية
+$page   = isset($_GET['page'])   ? (int)$_GET['page']   : 1;
+$limit  = isset($_GET['limit'])  ? (int)$_GET['limit']  : 50;
+$search = isset($_GET['search']) ? $_GET['search']      : '';
+$status = isset($_GET['status']) ? $_GET['status']      : '';
+$role   = isset($_GET['role'])   ? $_GET['role']        : '';
+
+$offset = ($page - 1) * $limit;
+
+// بناء شروط WHERE ديناميكية
+$where = [];
+$params = [];
+
+if ($search !== '') {
+    $where[] = "(username LIKE :search OR email LIKE :search)";
+    $params[':search'] = "%$search%";
+}
+if ($status !== '') {
+    $where[] = "status = :status";
+    $params[':status'] = $status;
+}
+if ($role !== '') {
+    $where[] = "role = :role";
+    $params[':role'] = $role;
+}
+
+$whereSQL = count($where) ? 'WHERE ' . implode(' AND ', $where) : '';
+
+// استعلام SQL مع التصفية والتقسيم
+$sql = "SELECT id, username, email, role, status, created_at 
+        FROM users 
+        $whereSQL 
+        ORDER BY created_at DESC 
+        LIMIT :limit OFFSET :offset";
+
+$stmt = $pdo->prepare($sql);
+
+// ربط القيم
+foreach ($params as $key => $value) {
+    $stmt->bindValue($key, $value);
+}
+$stmt->bindValue(':limit', $limit, PDO::PARAM_INT);
+$stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+
+$stmt->execute();
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 
+// إرجاع البيانات
 header('Content-Type: application/json');
-echo json_encode($users);
+echo json_encode([
+    'page' => $page,
+    'limit' => $limit,
+    'count' => count($users),
+    'users' => $users
+]);
 ?>
